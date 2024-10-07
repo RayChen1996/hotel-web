@@ -1,8 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* @import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"); */
+/* body {
+  font-family: "Open Sans", sans-serif;
+} */
 
-:root {
+/* :root {
   --background: #ffffff;
   --foreground: #171717;
 }
@@ -24,4 +28,4 @@ body {
   .text-balance {
     text-wrap: balance;
   }
-}
+} */
