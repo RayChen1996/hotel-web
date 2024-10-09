@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-
+import AppHeader from "@/components/Layout/AppHeader";
+import AppFooter from "@/components/Layout/AppFooter";
 export const metadata: Metadata = {
   title: "旅館訂房網站",
   description: "",
@@ -24,8 +25,14 @@ export default function RootLayout({
         /> */}
       </head>
       <body>
+        <div className=" flex flex-col ">
+          <AppHeader />
+          <main className=" min-h-dvh flex-1">{children}</main>
+
+          <AppFooter />
+        </div>
+
         {/* <i className="material-icons">home</i>   */}
-        {children}
       </body>
     </html>
   );
