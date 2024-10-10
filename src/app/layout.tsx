@@ -3,6 +3,7 @@ import "./globals.css";
 import AppHeader from "@/components/Layout/AppHeader";
 import AppFooter from "@/components/Layout/AppFooter";
 import AOSProvider from "@/provider/AOS";
+import QueryClientProvider from "@/provider/QueryClient";
 import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
@@ -27,7 +28,9 @@ export default function RootLayout({
         <div className="flex flex-col">
           <AppHeader />
           <main className="min-h-dvh flex-1 bg-white">
-            <AOSProvider>{children}</AOSProvider>
+            <AOSProvider>
+              <QueryClientProvider>{children}</QueryClientProvider>
+            </AOSProvider>
             <Toaster />
           </main>
           <AppFooter />

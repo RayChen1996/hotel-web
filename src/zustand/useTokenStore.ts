@@ -27,7 +27,7 @@ const useTokenStore = createWithEqualityFn(
       },
     })),
     {
-      name: "@gtcf_web_token",
+      name: "@hotel_web_token",
       storage: createJSONStorage(() => localStorage),
     }
   ),
