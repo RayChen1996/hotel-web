@@ -38,11 +38,7 @@ interface SignInResponse {
 /** - post loading `atom` */
 // const postLoadingAtom = atom(false);
 export default function SignIn() {
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<SignInFormData>({
+  const { control, handleSubmit } = useForm<SignInFormData>({
     resolver: zodResolver(schema),
   });
   const setToken = useTokenStore((state) => state.setToken);

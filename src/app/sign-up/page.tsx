@@ -1,9 +1,8 @@
 "use client";
 
 import React, { memo } from "react";
-// import { useRouter } from "next/navigation";
 
-import { atom, Provider, useAtomValue, useSetAtom } from "jotai";
+import { atom, Provider, useAtomValue } from "jotai";
 import FieldLabel from "@/components/FieldLabel";
 import {
   Controller,
@@ -16,7 +15,6 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useTokenStore from "@/zustand/useTokenStore";
 import { useMutation } from "@tanstack/react-query";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import axios from "axios";
 const stepAtom = atom(0);
 
@@ -92,8 +90,7 @@ interface SignUpResponse {
   token: string;
 }
 const Step3 = memo(function Step3({ loading }: Step3Props) {
-  const { register, resetField, handleSubmit, control } =
-    useFormContext<SignUpFormData>();
+  const { handleSubmit, control } = useFormContext<SignUpFormData>();
 
   const setToken = useTokenStore((state) => state.setToken);
 
@@ -199,7 +196,7 @@ const Step3 = memo(function Step3({ loading }: Step3Props) {
           control={control}
           defaultValue=""
           render={({
-            field: { onChange, value, ...field },
+            field: { onChange, ...field },
             fieldState: { error },
           }) => (
             <>
@@ -209,9 +206,9 @@ const Step3 = memo(function Step3({ loading }: Step3Props) {
                 placeholder="YYYY/MM/DD"
                 onChange={(e) => {
                   const v = e.target.value;
-                  // 自動格式化輸入
+
                   const formatted = v
-                    .replace(/\D/g, "") // 移除非數字
+                    .replace(/\D/g, "")
                     .replace(/(\d{4})(\d{1,2})?(\d{1,2})?/, (_, y, m, d) => {
                       if (!m) return y;
                       if (!d) return `${y}/${m}`;
