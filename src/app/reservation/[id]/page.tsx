@@ -10,7 +10,7 @@ export default function Page() {
   //   { label: "CHECK-OUT", value: "2019/8/12" },
   // ];
   return (
-    <div className="relative w-6/12   m-auto  ">
+    <div className="relative w-11/12 lg:w-6/12   m-auto  ">
       <div>
         <h3 className="text-4xl text-black font-bold leading-[55px] mb-12 mt-10">
           Reservation <br /> received!
@@ -58,7 +58,7 @@ export default function Page() {
             href={`/`}
             className="mt-[50px] btn w-1/2 rounded-none bg-blue border-none text-white my-6 h-[72px] uppercase"
           >
-            <button>homepage</button>
+            <button className="uppercase">homepage</button>
           </Link>
         </div>
       </div>

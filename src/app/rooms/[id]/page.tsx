@@ -1,5 +1,5 @@
 "use client";
-import { atom, useAtom, useSetAtom } from "jotai";
+import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
 import React, { memo, useCallback, useEffect, useState } from "react";
 import { Swiper } from "swiper/react";
 // Import Swiper styles
@@ -16,17 +16,43 @@ import numbro from "numbro";
 import Map from "@/components/pages/Map";
 import Link from "next/link";
 
+import { useParams } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { RoomsType } from "@/components/GridItmes/Room";
 /** - swiper`atom` */
 const swiperAtom = atom<SwiperClass | null>(null);
 /** - swiperIndex`atom` */
 const swiperIndexAtom = atom(0);
 
+import { roomId as roomIdAtom } from "@/jotai/Room";
+
+const roomTypeAtom = atom<RoomsType>();
+
 export default function Page() {
-  const currentPhotos: string[] = [
-    "/detail1.avif",
-    "/detail2.avif",
-    "/detail3.avif",
-  ];
+  const setRoomId = useSetAtom(roomIdAtom);
+  const setRoomTypeAtom = useSetAtom(roomTypeAtom);
+  const params = useParams();
+  const roomId = params.id ? decodeURI(params.id.toString()) : "";
+
+  setRoomId(roomId);
+  const { data: roomData } = useQuery({
+    queryKey: ["rooms"], // 正確使用 queryKey
+    queryFn: fetchRooms, // 查詢函數
+  });
+
+  async function fetchRooms(): Promise<RoomsType> {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/rooms/${roomId}`
+    );
+    if (!response.ok) {
+      throw new Error("Failed to fetch rooms");
+    }
+    const data = await response.json();
+
+    return data.result;
+  }
+
+  setRoomTypeAtom(roomData);
 
   const amenities = [
     { icon: "wifi", label: "Wi-Fi" },
@@ -45,13 +71,13 @@ export default function Page() {
 
   return (
     <div className="relative">
-      <div className=" w-8/12 m-auto">
+      <div className="w-10/12 lg:w-8/12 m-auto">
         <section className=" w-2/3 mt-10">
-          <PhotosArea data={currentPhotos} />
+          <PhotosArea data={roomData?.imageUrlList || []} />
           <div className="right-20 top-10 text-right h-full translate-y-64 fixed mt-20 z-50">
             <span className="flex text-right justify-end items-end gap-2">
               <span className="text-black font-bold text-3xl">
-                {numbro(1899).format({
+                {numbro(roomData?.price ?? 0).format({
                   thousandSeparated: true,
                   prefix: "\u00A0$\u00A0",
                 })}
@@ -63,15 +89,18 @@ export default function Page() {
             <div className="flex flex-col [&>div]:py-6 [&>div]:px-8 bg-white border-2 w-96 ">
               <div className="flex items-center border">
                 <span className="material-icons">date_range</span>
-                <select className="uppercase select bg-white w-full">
+                {/* <select className="uppercase select bg-white w-full">
                   <option value="">check-in</option>
-                </select>
+                </select> */}
+
+                <input type="date" className=" bg-white" />
               </div>
               <div className="flex items-center border">
                 <span className="material-icons">date_range</span>
-                <select className="uppercase select bg-white w-full">
+                {/* <select className="uppercase select bg-white w-full">
                   <option value="">check-in</option>
-                </select>
+                </select> */}
+                <input type="date" className=" bg-white" />
               </div>
               <Link href={"/reservation"} className="w-full">
                 <button
@@ -131,10 +160,12 @@ export default function Page() {
   );
 }
 function VerticalTitle() {
+  const getRoomTypeAtom = useAtomValue(roomTypeAtom);
+  const showName = getRoomTypeAtom?.name ?? "";
   return (
-    <div className="-left-60 absolute top-7 h-full flex items-center z-50 ">
+    <div className="  -left-32 absolute top-7 h-full flex items-center z-50 ">
       <h1 className="transform rotate-90 whitespace-nowrap text-6xl bg-white italic font-light origin-center translate-y-[-50%] text-gray-800">
-        Deluxe Single Room
+        {showName}
       </h1>
     </div>
   );
@@ -161,7 +192,7 @@ const PhotosArea = memo(function PhotosArea({ data }: { data: string[] }) {
         <div role="status" className="skeleton w-full h-full rounded" />
       ) : (
         <div className="flex flex-1 flex-col">
-          <div className="    relative">
+          <div className="relative">
             <div id="photos_container" className="aspect-[3/2]">
               <Swiper
                 loop

@@ -30,7 +30,6 @@ export default function Home() {
             fill
             className="object-cover"
           />
-
           <Block1 />
           <Recommand />
           <Banner />

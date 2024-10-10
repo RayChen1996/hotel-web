@@ -1,62 +1,49 @@
+"use client";
 import React from "react";
 import SectionTitle from "../SectionTitle";
-import { StaticImageData } from "next/image";
-import Img1 from "@/../public/khadeeja-yasser-msFZE7d9KB4-unsplash.jpg";
-import Img2 from "@/../public/photo-1549638441-b787d2e11f14.avif";
-import Img3 from "@/../public/photo-1621891334481-5c14b369d9d7.avif";
-import Img4 from "@/../public/premium_photo-1674676471380-1258cb31b3ac.avif";
-import Img5 from "@/../public/photo-1558392164-be227dfe1c98.avif";
-import Img6 from "@/../public/photo-1559841771-599b6eeaca62.avif";
+
 import RoomItem from "../GridItmes/Room";
+import { useQuery } from "@tanstack/react-query";
+import { RoomsType } from "@/components/GridItmes/Room";
+import useTokenStore from "@/zustand/useTokenStore";
 
-/** - 房間展示區 */
-interface RoomsType {
-  name: string;
-  price: number;
-  src: StaticImageData;
-}
+const loadingData = Array.from({ length: 2 }).map(() => undefined);
+
 export default function Rooms() {
-  const rooms: RoomsType[] = [
-    {
-      name: "twin room",
-      price: 3350,
-      src: Img1,
-    },
-    {
-      name: "Double Room",
-      price: 2460,
-      src: Img2,
-    },
-  ];
+  const { data: roomsData, isLoading } = useQuery({
+    queryKey: ["rooms"], // 正確使用 queryKey
+    queryFn: fetchRooms, // 查詢函數
+  });
+  const { token } = useTokenStore();
+  const onePersonRooms = roomsData?.filter((room) => room?.maxPeople === 1);
+  const twoPeopleRooms = roomsData?.filter((room) => room?.maxPeople === 2);
+  const familyRooms = roomsData?.filter((room) => room?.maxPeople > 2);
+  async function fetchRooms(): Promise<RoomsType[]> {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/rooms`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      }
+    );
 
-  const roomsType2: RoomsType[] = [
-    {
-      name: "Double Room",
-      price: 3350,
-      src: Img3,
-    },
-    {
-      name: "Deluxe Double Room",
-      price: 2460,
-      src: Img4,
-    },
-  ];
+    if (!response.ok) {
+      throw new Error("Failed to fetch rooms");
+    }
+    const data = await response.json();
+    // console.log(data);
+    return data.result;
+  }
+  // console.log(onePersonRooms);
+  // console.log(twoPeopleRooms);
+  // console.log(familyRooms);
 
-  const roomsType3: RoomsType[] = [
-    {
-      name: "Twin Room",
-      price: 3899,
-      src: Img5,
-    },
-    {
-      name: "Deluxe Twin Room",
-      price: 3350,
-      src: Img6,
-    },
-  ];
   return (
     <div className="bg-white relative m-auto py-11">
-      <div className=" w-10/12 m-auto ">
+      <div className="w-10/12 m-auto">
         <section
           data-aos="fade-left"
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-7 mb-[47px]"
@@ -65,8 +52,14 @@ export default function Rooms() {
             title="One person"
             subTitle="Enjoy the one and only service"
           />
-
-          {rooms.map((item, key) => {
+          {isLoading && (
+            <>
+              {loadingData.map((_, i) => (
+                <RoomItem key={"favoriteProduct" + i} />
+              ))}
+            </>
+          )}
+          {onePersonRooms?.map((item, key) => {
             return <RoomItem data={item} key={key} />;
           })}
         </section>
@@ -79,7 +72,7 @@ export default function Rooms() {
             subTitle="The perfect choice for both of you"
           />
 
-          {roomsType2.map((item, key) => {
+          {twoPeopleRooms?.map((item, key) => {
             return <RoomItem data={item} key={key} />;
           })}
         </section>
@@ -93,7 +86,7 @@ export default function Rooms() {
             subTitle="Wanna a big room? there you are"
           />
 
-          {roomsType3.map((item, key) => {
+          {familyRooms?.map((item, key) => {
             return <RoomItem data={item} key={key} />;
           })}
         </section>

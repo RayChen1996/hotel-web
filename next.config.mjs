@@ -5,7 +5,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "plus.unsplash.com",
+        hostname: "images.unsplash.com",
         pathname: "/**", // 允許該域名的所有路徑
       },
     ],

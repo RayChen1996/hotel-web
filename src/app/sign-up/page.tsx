@@ -31,7 +31,7 @@ const signUpSchema = z.object({
     .string()
     .min(1, "請輸入手機號碼")
     .regex(/^09\d{8}$/, "請輸入有效的手機號碼格式"),
-  birthday: z.string().optional(),
+  birthday: z.string().min(1, "請輸入生日"),
   address: z.object({
     zipcode: z.string().min(1, "請輸入郵遞區號"),
     detail: z.string().min(1, "請輸入地址"),
@@ -58,7 +58,7 @@ export default function SignUpPage() {
   return (
     <FormProvider {...form}>
       <div className="card">
-        <h2 className="card-title text-primary">Sign Up</h2>
+        <h2 className="card-title text-primary">註冊</h2>
         <Provider>
           <FormArea loading={false} />
         </Provider>
@@ -210,9 +210,9 @@ const Step3 = memo(function Step3({ loading }: Step3Props) {
                   const formatted = v
                     .replace(/\D/g, "")
                     .replace(/(\d{4})(\d{1,2})?(\d{1,2})?/, (_, y, m, d) => {
-                      if (!m) return y;
-                      if (!d) return `${y}/${m}`;
-                      return `${y}/${m}/${d}`;
+                      // if (!m) return y;
+                      // if (!d) return `${y}/${m}`;
+                      return `${y}-${m}-${d}`;
                     });
                   onChange(formatted);
                 }}
