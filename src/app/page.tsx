@@ -7,11 +7,11 @@ import Banner from "@/components/pages/Banner";
 import Rooms from "@/components/pages/Rooms";
 import Map from "@/components/pages/Map";
 import { enterHome } from "@/jotai/Layout";
-import { useAtom } from "jotai";
+import { useSetAtom } from "jotai";
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 export default function Home() {
-  const [home, setHome] = useAtom(enterHome);
+  const setHome = useSetAtom(enterHome);
   const pathname = usePathname();
 
   useEffect(() => {

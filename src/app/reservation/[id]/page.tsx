@@ -1,15 +1,14 @@
 import React from "react";
-import Img6 from "@/../public/photo-1559841771-599b6eeaca62.avif";
-import Image from "next/image";
+
 import Link from "next/link";
 export default function Page() {
-  const reservationDetails = [
-    { label: "GUEST", value: "Annalise Parisian" },
-    { label: "PHONE", value: "+886 9 32 456 789" },
-    { label: "ROOM", value: "Deluxe Single Room / 5 Nights" },
-    { label: "CHECK-IN", value: "2019/8/7" },
-    { label: "CHECK-OUT", value: "2019/8/12" },
-  ];
+  // const reservationDetails = [
+  //   { label: "GUEST", value: "Annalise Parisian" },
+  //   { label: "PHONE", value: "+886 9 32 456 789" },
+  //   { label: "ROOM", value: "Deluxe Single Room / 5 Nights" },
+  //   { label: "CHECK-IN", value: "2019/8/7" },
+  //   { label: "CHECK-OUT", value: "2019/8/12" },
+  // ];
   return (
     <div className="relative w-6/12   m-auto  ">
       <div>
@@ -66,4 +65,3 @@ export default function Page() {
     </div>
   );
 }
-3;

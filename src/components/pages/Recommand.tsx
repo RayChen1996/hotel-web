@@ -1,10 +1,10 @@
 import React from "react";
 import SectionTitle from "../SectionTitle";
-import Image, { StaticImageData } from "next/image";
+import { StaticImageData } from "next/image";
 import Img1 from "@/../public/khadeeja-yasser-msFZE7d9KB4-unsplash.jpg";
 import Img2 from "@/../public/photo-1549638441-b787d2e11f14.avif";
 import Img3 from "@/../public/photo-1621891334481-5c14b369d9d7.avif";
-import numbro from "numbro";
+
 import RoomItem from "../GridItmes/Room";
 interface RoomsType {
   name: string;

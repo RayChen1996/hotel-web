@@ -1,6 +1,6 @@
 import React from "react";
 import SectionTitle from "../SectionTitle";
-import Image, { StaticImageData } from "next/image";
+import { StaticImageData } from "next/image";
 import Img1 from "@/../public/khadeeja-yasser-msFZE7d9KB4-unsplash.jpg";
 import Img2 from "@/../public/photo-1549638441-b787d2e11f14.avif";
 import Img3 from "@/../public/photo-1621891334481-5c14b369d9d7.avif";
@@ -8,7 +8,7 @@ import Img4 from "@/../public/premium_photo-1674676471380-1258cb31b3ac.avif";
 import Img5 from "@/../public/photo-1558392164-be227dfe1c98.avif";
 import Img6 from "@/../public/photo-1559841771-599b6eeaca62.avif";
 import RoomItem from "../GridItmes/Room";
-import numbro from "numbro";
+
 /** - 房間展示區 */
 interface RoomsType {
   name: string;
