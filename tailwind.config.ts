@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
 import daisyui from "daisyui";
-
+import daisyuiDefaultThemes from "daisyui/src/theming/themes";
+import defaultTheme from "tailwindcss/defaultTheme";
 const config: Config = {
   darkMode: "class",
   content: [
@@ -25,5 +26,32 @@ const config: Config = {
     },
   },
   plugins: [daisyui],
+  daisyui: {
+    darkTheme: "dark",
+    themes: [
+      {
+        light: {
+          ...daisyuiDefaultThemes.light,
+          primary: "#569DC3",
+          "primary-content": "#2D3643",
+          secondary: "#748290",
+          "secondary-content": "#F7D9BB",
+          accent: "#E3E6E9",
+          "accent-content": "#FFC29D",
+        },
+      },
+      {
+        dark: {
+          ...daisyuiDefaultThemes.dark,
+          primary: "#569DC3",
+          "primary-content": "#569DC3",
+          secondary: "#F0C7A7",
+          "secondary-content": "#FAE5CC",
+          accent: "#FF825C",
+          "accent-content": "#FFC29D",
+        },
+      },
+    ],
+  },
 };
 export default config;

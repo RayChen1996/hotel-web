@@ -17,7 +17,6 @@ export default function Home() {
   useEffect(() => {
     setHome(true);
     return () => {
-      console.log("exit");
       setHome(false);
     };
   }, [pathname]);

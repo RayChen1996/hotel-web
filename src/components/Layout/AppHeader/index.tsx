@@ -9,7 +9,7 @@ export default function AppHeader() {
   if (getAtom) return null;
   if (!getAtom)
     return (
-      <header className="min-h-20 sticky top-0 shadow-md flex items-center justify-between bg-white z-50">
+      <header className="min-h-20 sticky top-0 shadow-md  lg:flex items-center justify-between bg-white z-50">
         <span className="bg-gray-700 text-3xl text-white italic font-extrabold px-5 py-3 h-20 justify-center items-center inline-flex">
           <Link
             href="/"

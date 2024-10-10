@@ -6,17 +6,19 @@ export default function Block1() {
     <div className="relative flex justify-end w-11/12 m-auto py-12">
       <VerticalTitle />
       <div className="flex flex-col [&>div]:py-6 [&>div]:px-8 bg-white border-2 w-80">
-        <div className="flex items-center border">
+        <div className="flex items-center border gap-3">
           <span className="material-icons">date_range</span>
-          <select className=" select bg-white w-full">
+          {/* <select className=" select bg-white w-full">
             <option value="">check-in</option>
-          </select>
+          </select> */}
+          <input type="date" className=" bg-white" />
         </div>
-        <div className="flex items-center border">
+        <div className="flex items-center border  gap-3">
           <span className="material-icons">date_range</span>
-          <select className="select bg-white w-full">
+          {/* <select className="select bg-white w-full">
             <option value="">check-in</option>
-          </select>
+          </select> */}
+          <input type="date" className=" bg-white" />
         </div>
         <div className="flex items-center border">
           <span className="material-icons">hotel</span>

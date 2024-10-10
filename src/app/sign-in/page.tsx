@@ -1,5 +1,7 @@
-import React from "react";
+// 組件
+import SignIn from "@/components/SignIn";
+// 工具
 
-export default function SignInPage() {
-  return <div></div>;
+export default async function SignInPage() {
+  return <SignIn />;
 }
