@@ -8,6 +8,11 @@ const nextConfig = {
         hostname: "images.unsplash.com",
         pathname: "/**", // 允許該域名的所有路徑
       },
+      {
+        protocol: "https",
+        hostname: "fakeimg.pl",
+        pathname: "/**", // 允許該域名的所有路徑
+      },
     ],
   },
 };

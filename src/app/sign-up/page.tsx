@@ -294,7 +294,7 @@ const Step3 = memo(function Step3({ loading }: Step3Props) {
 
       <button
         type="submit"
-        className="btn btn-primary btn-block text-white"
+        className="btn   btn-block text-white rounded-none"
         disabled={loading}
       >
         {loading ? <span className="loading loading-spinner" /> : null}註冊

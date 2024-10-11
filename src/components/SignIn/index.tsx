@@ -38,7 +38,7 @@ interface SignInResponse {
 /** - post loading `atom` */
 // const postLoadingAtom = atom(false);
 export default function SignIn() {
-  const { control, handleSubmit } = useForm<SignInFormData>({
+  const { control, handleSubmit, setValue } = useForm<SignInFormData>({
     resolver: zodResolver(schema),
   });
   const setToken = useTokenStore((state) => state.setToken);
@@ -141,7 +141,7 @@ export default function SignIn() {
             </button>
             <Link
               href="/sign-up"
-              className="btn btn-primary border-blue btn-outline btn-block"
+              className="btn rounded-none border-blue btn-outline btn-block"
             >
               註冊
             </Link>
@@ -149,6 +149,19 @@ export default function SignIn() {
               <label className="label">
                 <span className="label-text text-primary">
                   <Link href="/forget-password">忘記密碼</Link>
+                </span>
+              </label>
+            </div>
+            <div className="flex flex-col items-center w-full">
+              <label className="label">
+                <span
+                  onClick={() => {
+                    setValue("email", "ray.10315332@gmail.com");
+                    setValue("password", "As123df000");
+                  }}
+                  className="label-text text-primary"
+                >
+                  DEMO 帳號
                 </span>
               </label>
             </div>

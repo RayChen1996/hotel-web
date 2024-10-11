@@ -1,18 +1,15 @@
 "use client";
-import { RoomsType } from "@/components/GridItmes/Room";
+import { Order } from "@/schema/member";
 import useTokenStore from "@/zustand/useTokenStore";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import React from "react";
 
 export default function Page() {
   const { token } = useTokenStore();
-  async function fetchConsoleRooms(): Promise<RoomsType[]> {
+  const queryClient = useQueryClient();
+  async function fetchConsoleOrders(): Promise<Order[]> {
     try {
-      console.log("Fetching rooms...");
-
-      console.log("Token:", token);
-
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/admin/orders/`,
         {
@@ -24,8 +21,6 @@ export default function Page() {
         }
       );
 
-      console.log("Response status:", response.status);
-
       if (!response.ok) {
         const errorData = await response.json();
         console.log("Error Data:", errorData);
@@ -33,25 +28,53 @@ export default function Page() {
       }
 
       const data = await response.json();
-      console.log("Data:", data);
+
       return data.result;
     } catch (error) {
       console.error("Error fetching rooms:", error);
-      throw error; // 重新拋出錯誤以便 React Query 可以處理
+      throw error;
     }
   }
 
-  const { data: roomsData, isLoading } = useQuery({
-    queryKey: ["console_room"], // 正確使用 queryKey
-    queryFn: fetchConsoleRooms, // 查詢函數
+  async function deleteConsoleOrder(orderId: string): Promise<void> {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/admin/orders/${orderId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Unknown error occurred");
+      }
+
+      console.log("Order deleted successfully");
+    } catch (error) {
+      console.error("Error deleting order:", error);
+      throw error;
+    }
+  }
+  const mutation = useMutation({
+    mutationFn: (orderId: string) => deleteConsoleOrder(orderId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["console_room"] });
+    },
   });
-  console.log("roomsData");
-  console.log(roomsData);
+  const { data: ordersData, isLoading } = useQuery({
+    queryKey: ["console_room"],
+    queryFn: fetchConsoleOrders,
+  });
 
   if (isLoading) {
-    return <span className=" loading loading-spinner"></span>;
+    return <span className="loading loading-spinner"></span>;
   }
-
+  const filteredOrders = ordersData?.filter((order) => order.status != -1);
   return (
     <div>
       <div className="overflow-x-auto">
@@ -64,14 +87,14 @@ export default function Page() {
                   <input type="checkbox" className="checkbox" />
                 </label>
               </th>
-              <th>房型名稱</th>
-              <th>總數</th>
-              <th>價格</th>
-              <th>編輯/刪除</th>
+              <th>Order ID</th>
+              <th>Name</th>
+              <th>Price</th>
+              <th>Edit/Delete</th>
             </tr>
           </thead>
           <tbody>
-            {roomsData?.map((item) => {
+            {filteredOrders?.map((item) => {
               return (
                 <tr key={`idx`}>
                   <th>
@@ -81,20 +104,24 @@ export default function Page() {
                   </th>
                   <td>
                     <div className="flex items-center gap-3">
-                      <div className="avatar">
-                        <div className="mask mask-squircle h-12 w-12">
-                          <img src={item.imageUrl} alt="" />
-                        </div>
-                      </div>
                       <div>
-                        <div className="font-bold">{item.name}</div>
+                        <div className="font-bold">{item._id}</div>
                       </div>
                     </div>
                   </td>
-                  <td>{item.maxPeople}</td>
-                  <td>{item.price}</td>
+                  <td>{item.roomId?.name}</td>
+                  <td>{item.roomId?.price}</td>
                   <th>
-                    <button className="btn btn-ghost btn-xs">刪除</button>
+                    <button
+                      type="button"
+                      onClick={() => mutation.mutate(item._id)}
+                      className="btn btn-ghost btn-xs"
+                    >
+                      刪除
+                      {mutation.isPending && (
+                        <span className="loading loading-spinner"></span>
+                      )}
+                    </button>
                   </th>
                 </tr>
               );

@@ -30,9 +30,9 @@ import { useRouter } from "next/navigation";
   }
  */
 const orderSchema = z.object({
-  roomId: z.string().min(1, "請輸入姓名"),
-  checkInDate: z.string().min(1, "請輸入信箱").email("請輸入有效的信箱格式"),
-  checkOutDate: z.string().min(1, "請輸入信箱").email("請輸入有效的信箱格式"),
+  roomId: z.string().min(1, "請輸入"),
+  checkInDate: z.string().min(1, "請輸入"),
+  checkOutDate: z.string().min(1, "請輸入"),
   peopleNum: z.number(),
 
   userInfo: z.object({
@@ -58,7 +58,7 @@ interface SignUpResponse {
 
 export default function Page() {
   const { data: userData } = useQuery({
-    queryKey: ["userData"], // 正確使用 queryKey
+    queryKey: ["userData"], //  queryKey
     queryFn: fetchRooms, // 查詢函數
   });
   const { token } = useTokenStore();
@@ -86,17 +86,37 @@ export default function Page() {
         // return []; // 可以返回空數組以避免後續的錯誤
       }
 
-      throw new Error(errorMessage); // 仍然拋出錯誤以供其他地方處理
+      throw new Error(errorMessage);
     }
     const data = await response.json();
     // console.log(data);
     return data.result;
   }
-  // console.log("userData");
-  // console.log(userData?.name);
-  // console.log(isLoading);
 
-  const orderMutation = useMutation<SignUpResponse, Error, OrderFormData>({
+  // const orderMutation = useMutation<SignUpResponse, Error, OrderFormData>({
+  //   mutationFn: async (data: OrderFormData) => {
+  //     const response = await axios.post<SignUpResponse>(
+  //       `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/orders/`,
+  //       data,
+  //       {
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `${token}`,
+  //         },
+  //       }
+  //     );
+  //     return response.data;
+  //   },
+  //   onSuccess: (data) => {
+  //     if (data.status) {
+  //       push(`/reservation/${data?.result.roomId._id}`);
+  //     }
+  //   },
+  //   onError: (error) => {
+  //     console.error("Error signing up:", error);
+  //   },
+  // });
+  const orderMutation = useMutation({
     mutationFn: async (data: OrderFormData) => {
       const response = await axios.post<SignUpResponse>(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/orders/`,
@@ -150,23 +170,6 @@ export default function Page() {
         console.error("Error:", error);
       }
     }
-
-    // orderMutation.mutate({
-    //   roomId: getAtomId,
-    //   checkInDate: "2024/10/11",
-    //   checkOutDate: "2024/10/12",
-    //   peopleNum: 1,
-
-    //   userInfo: {
-    //     name: userData?.name || "",
-    //     email: userData?.email || "",
-    //     address: {
-    //       detail: userData?.address.detail || "",
-    //       zipcode: userData?.address.zipcode || 0,
-    //     },
-    //     phone: userData?.phone || "",
-    //   },
-    // });
   };
 
   return (
@@ -204,9 +207,12 @@ export default function Page() {
         <button
           onClick={handleClickSubmit}
           type="button"
-          className="mt-[50px] btn rounded-none bg-blue border-none text-white w-full"
+          className="mt-[50px] btn rounded-none bg-blue border-none text-white w-full uppercase"
         >
           reserve now
+          {orderMutation.isPending && (
+            <span className=" loading loading-spinner"></span>
+          )}
         </button>
         {/* </Link> */}
       </div>
