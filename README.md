@@ -1,36 +1,66 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 旅館訂房網站
 
-## Getting Started
+這是一個旅館訂房網站的前後台專案，提供用戶查詢、預訂及管理旅館的功能。該網站使用 RESTful API 與前端框架進行集成，並提供用戶友好的介面。
 
-First, run the development server:
+## 目錄
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- [功能](#功能)
+- [技術棧](#技術棧)
+- [使用套件](#使用套件)
+- [API 文件](#api-文件)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 功能
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **前台功能**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+  - 瀏覽旅館列表
+  - 旅館詳情
+  - 預訂旅館
+  - 登入/註冊
+  - 預訂管理
 
-## Learn More
+- **管理後台功能**
+  - 登入/註冊管理後台
+  - 管理旅館資料（新增、刪除）
+  - 查看所有預訂記錄
+  - 訂單管理
+  - 房型管理
 
-To learn more about Next.js, take a look at the following resources:
+## 技術棧
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- 前端：React(Next.js)、Zustand、Axios、react-query
+- 認證：JWT（JSON Web Token）
+- 部署：Render、Vercel
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 使用套件
 
-## Deploy on Vercel
+以下是專案中使用的主要套件：
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `@hookform/resolvers`: ^3.9.0
+- `@tanstack/react-query`: ^5.59.0
+- `aos`: ^2.3.4
+- `validator`: ^13.11.0
+- `axios`: ^1.7.7
+- `deepmerge-ts`: ^5.1.0
+- `fast-equals`: ^5.0.1
+- `clsx`: ^2.1.0
+- `date-fns`: ^2.30.0
+- `jotai`: ^2.10.0
+- `next`: 14.2.14
+- `next-image-export-optimizer`: ^1.12.3
+- `numbro`: ^2.4.0
+- `react`: ^18
+- `react-dom`: ^18
+- `react-hook-form`: ^7.53.0
+- `react-hot-toast`: ^2.4.1
+- `swiper`: ^11.0.5
+- `zod`: ^3.23.8
+- `zustand`: ^4.4.7
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## API 文件
+
+[API 文件](https://freyja-vw02.onrender.com/swagger)
+
+## DEMO
+
+[展示網址](https://hotel-web-three.vercel.app/)
