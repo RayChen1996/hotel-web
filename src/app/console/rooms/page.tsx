@@ -34,14 +34,15 @@ const hotelImages = [
 
 const roomSchema = z.object({
   name: z.string().min(1, "請輸入房型名稱"),
+
   maxPeople: z
     .number()
     .min(1, "人數不能小於1")
-    .refine((value) => value > 0, "最大容納人數需大於0"),
+    .transform((value) => Math.round(value)), // 確保價格為整數
   price: z
     .number()
-    .min(0, "價格不能為負數")
-    .refine((value) => value >= 0, "價格需為正數"),
+    .min(1, "價格必須大於0")
+    .transform((value) => Math.round(value)), // 確保價格為整數
   imageUrl: z.string().min(1, "請選擇主要圖片"),
   imageUrlList: z.array(z.string()).min(1, "請至少選擇一張其他圖片"),
 });
@@ -58,7 +59,7 @@ export default function Page() {
     defaultValues: {
       name: "",
       maxPeople: 1,
-      price: 0,
+      price: 3000,
       imageUrl: "",
       imageUrlList: [],
     },
@@ -187,17 +188,15 @@ export default function Page() {
     name: string;
     maxPeople: number;
     price: number;
+    imageUrl: string;
+    imageUrlList: string[];
   }): Promise<void> {
     const roomData = {
       name: data.name,
       description:
         "享受高級的住宿體驗，尊爵雙人房提供給您舒適寬敞的空間和精緻的裝潢。",
-      imageUrl: "https://fakeimg.pl/300/",
-      imageUrlList: [
-        "https://fakeimg.pl/300/",
-        "https://fakeimg.pl/300/",
-        "https://fakeimg.pl/300/",
-      ],
+      imageUrl: data.imageUrl,
+      imageUrlList: ["https://fakeimg.pl/300/"],
       areaInfo: "24坪",
       bedInfo: "一張大床",
       maxPeople: data.maxPeople,
@@ -235,6 +234,8 @@ export default function Page() {
     name: string;
     maxPeople: number;
     price: number;
+    imageUrl: string;
+    imageUrlList: string[];
   }) => {
     mutation.mutate(data);
   };
@@ -285,10 +286,11 @@ export default function Page() {
               <Controller
                 name="maxPeople"
                 control={control}
-                render={({ field }) => (
+                render={({ field: { value, onChange } }) => (
                   <input
-                    {...field}
+                    value={value}
                     id="maxPeople"
+                    onChange={(e) => onChange(Number(e.target.value) || 0)}
                     type="number"
                     className={`input input-bordered bg-white ${
                       errors.maxPeople ? "border-red-500" : ""
@@ -308,11 +310,12 @@ export default function Page() {
               <Controller
                 name="price"
                 control={control}
-                render={({ field }) => (
+                render={({ field: { value, onChange } }) => (
                   <input
-                    {...field}
                     id="price"
                     type="number"
+                    value={value}
+                    onChange={(e) => onChange(Number(e.target.value) || 0)}
                     className={`input input-bordered bg-white ${
                       errors.price ? "border-red-500" : ""
                     }`}

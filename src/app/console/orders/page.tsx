@@ -94,6 +94,14 @@ export default function Page() {
             </tr>
           </thead>
           <tbody>
+            {filteredOrders?.length === 0 && (
+              <tr>
+                {" "}
+                <td colSpan={5} className="text-gray-400 font-bold">
+                  No Data
+                </td>
+              </tr>
+            )}
             {filteredOrders?.map((item) => {
               return (
                 <tr key={`idx`}>
