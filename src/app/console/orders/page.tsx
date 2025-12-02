@@ -1,74 +1,24 @@
 "use client";
-import { Order } from "@/schema/member";
-import useTokenStore from "@/zustand/useTokenStore";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-
 import React from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  deleteAdminOrder,
+  fetchAdminOrders,
+} from "@/lib/api";
+import useTokenStore from "@/zustand/useTokenStore";
 
 export default function Page() {
   const { token } = useTokenStore();
   const queryClient = useQueryClient();
-  async function fetchConsoleOrders(): Promise<Order[]> {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/admin/orders/`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `${token}`,
-          },
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.log("Error Data:", errorData);
-        throw new Error(errorData.message || "Unknown error occurred");
-      }
-
-      const data = await response.json();
-
-      return data.result;
-    } catch (error) {
-      console.error("Error fetching rooms:", error);
-      throw error;
-    }
-  }
-
-  async function deleteConsoleOrder(orderId: string): Promise<void> {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/admin/orders/${orderId}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `${token}`,
-          },
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Unknown error occurred");
-      }
-
-      console.log("Order deleted successfully");
-    } catch (error) {
-      console.error("Error deleting order:", error);
-      throw error;
-    }
-  }
   const mutation = useMutation({
-    mutationFn: (orderId: string) => deleteConsoleOrder(orderId),
+    mutationFn: (orderId: string) => deleteAdminOrder(orderId, token ?? ""),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["console_room"] });
+      queryClient.invalidateQueries({ queryKey: ["adminOrders"] });
     },
   });
   const { data: ordersData, isLoading } = useQuery({
-    queryKey: ["console_room"],
-    queryFn: fetchConsoleOrders,
+    queryKey: ["adminOrders"],
+    queryFn: () => fetchAdminOrders(token ?? ""),
   });
 
   if (isLoading) {
@@ -104,7 +54,7 @@ export default function Page() {
             )}
             {filteredOrders?.map((item) => {
               return (
-                <tr key={`idx`}>
+                <tr key={item._id}>
                   <th>
                     <label>
                       <input type="checkbox" className="checkbox" />
@@ -126,7 +76,7 @@ export default function Page() {
                       className="btn btn-ghost btn-xs"
                     >
                       刪除
-                      {mutation.isPending && (
+                      {mutation.isPending && mutation.variables === item._id && (
                         <span className="loading loading-spinner"></span>
                       )}
                     </button>

@@ -3,15 +3,18 @@ import React from "react";
 import Img6 from "@/../public/photo-1559841771-599b6eeaca62.avif";
 import Image from "next/image";
 
-import { Member } from "@/schema/member";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import useTokenStore from "@/zustand/useTokenStore";
-
-import axios from "axios";
 import { z } from "zod";
 import { roomId } from "@/jotai/Room";
 import { useAtomValue } from "jotai";
 import { useRouter } from "next/navigation";
+import {
+  CreateOrderPayload,
+  createOrder,
+  fetchCurrentUser,
+} from "@/lib/api";
+import { Member } from "@/schema/member";
 /**
  * 
  * 
@@ -46,105 +49,40 @@ const orderSchema = z.object({
   }),
 });
 
-type OrderFormData = z.infer<typeof orderSchema>;
-interface SignUpResponse {
-  status: boolean;
-  result: {
-    roomId: {
-      _id: string;
-    };
-  };
-}
 
 export default function Page() {
-  const { data: userData } = useQuery({
-    queryKey: ["userData"], //  queryKey
-    queryFn: fetchRooms, // 查詢函數
-  });
   const { token } = useTokenStore();
   const { push } = useRouter();
 
-  async function fetchRooms(): Promise<Member> {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/user/`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `${token}`,
-        },
-      }
-    );
+  const { data: userData } = useQuery<Member | undefined>({
+    queryKey: ["userData"],
+    queryFn: () => fetchCurrentUser(token ?? ""),
+    enabled: Boolean(token),
+  });
 
-    if (!response.ok) {
-      const errorData = await response.json(); // 獲取錯誤響應的 JSON 數據
-      const errorMessage = errorData.message || "Unknown error occurred"; // 獲取錯誤訊息
-
-      // 檢查是否為重新登入的錯誤
-      if (errorData.message === "請重新登入") {
-        // console.log("請重新登入2");
-        // return []; // 可以返回空數組以避免後續的錯誤
-      }
-
-      throw new Error(errorMessage);
-    }
-    const data = await response.json();
-    // console.log(data);
-    return data.result;
-  }
-
-  // const orderMutation = useMutation<SignUpResponse, Error, OrderFormData>({
-  //   mutationFn: async (data: OrderFormData) => {
-  //     const response = await axios.post<SignUpResponse>(
-  //       `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/orders/`,
-  //       data,
-  //       {
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           Authorization: `${token}`,
-  //         },
-  //       }
-  //     );
-  //     return response.data;
-  //   },
-  //   onSuccess: (data) => {
-  //     if (data.status) {
-  //       push(`/reservation/${data?.result.roomId._id}`);
-  //     }
-  //   },
-  //   onError: (error) => {
-  //     console.error("Error signing up:", error);
-  //   },
-  // });
   const orderMutation = useMutation({
-    mutationFn: async (data: OrderFormData) => {
-      const response = await axios.post<SignUpResponse>(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/orders/`,
-        data,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `${token}`,
-          },
-        }
-      );
-      return response.data;
-    },
+    mutationFn: (data: CreateOrderPayload) => createOrder(data, token),
     onSuccess: (data) => {
-      if (data.status) {
-        push(`/reservation/${data?.result.roomId._id}`);
+      const orderId = data?.result?.roomId?._id;
+      if (data.status && orderId) {
+        push(`/reservation/${orderId}`);
       }
     },
     onError: (error) => {
-      console.error("Error signing up:", error);
+      console.error("Error creating order:", error);
     },
   });
 
   const getAtomId = useAtomValue(roomId);
 
   const handleClickSubmit = () => {
+    if (!token) {
+      console.error("No token found; unable to create order.");
+      return;
+    }
+
     try {
-      const orderData: OrderFormData = {
+      const orderData: CreateOrderPayload = {
         roomId: getAtomId,
         checkInDate: "2024/10/11",
         checkOutDate: "2024/10/12",
